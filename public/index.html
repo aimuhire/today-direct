@@ -1,9 +1,52 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Today Direct Links</title>
+    <link rel="stylesheet" href="/assets/main.css">
+    <link rel="stylesheet" href="/assets/loader.css">
 </head>
+
 <body>
+    <div class="wrapper">
+
+<div class="main-title">
+
+   <h1>Today TV Series Direct Links</h1> 
+    <span>Site created to bypass ads on todaytvseries website</span>
+</div>
+        <div class="container">
+
+            <div class="search-box">
+                <input id="search" type="text" placeholder="Search series title...">
+                <button onclick="searchCtrl.showSearchResults()">Search</button>
+            </div>
+            <div class="results-container">
+                <div id="loader">
+                    <div id="blockG_1" class="loader_blockG"></div>
+                    <div id="blockG_2" class="loader_blockG"></div>
+                    <div id="blockG_3" class="loader_blockG"></div>
+                </div>
+                <div id="search-results-container">
+                </div>
+                <div id="series-container">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+       <div class="note"> This site *may* stop working anytime. i.e: We don't host any of these files.</div>
+       <div class="copyright">
+                  &copy;
+        <script>document.write(new Date().getFullYear())</script> The Data Z inc
+       </div>
+
+    </div>
+    <script src="assets/main.js"></script>
 </body>
+
 </html>

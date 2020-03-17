@@ -2,31 +2,28 @@
 let Scrapper = require('../scrapper')
 
 module.exports = class ScrapperClient {
-    static getSeriesMetadata() {
+    static getSeriesMetadata(endpoint) {
         return new Promise((resolve, reject) => {
-            let scrapper = new Scrapper()
+            let scrapper = new Scrapper(endpoint)
             scrapper.loadPage().then(() => {
 
-            let details = scrapper.getMovieDetails()
+                let details = scrapper.getEpisodeDetails()
                 let extractedSeasons = []
-                let seasons = scrapper.getMoviesElementsList()
+                let seasons = scrapper.getEpisodesElementsList()
+                seasons.forEach((season, index) => {
+                    let extractedEpisodes = []
 
-                seasons.forEach(season => {
-                    let extractedMovies = []
-
-                    season.forEach(movie => {
-                        let metadata = scrapper.extractMetadataFromMovieElement(movie)
-                        extractedMovies.push(metadata)
+                    season.seasonEpisodeElements.forEach(episode => {
+                        let metadata = scrapper.extractMetadataFromEpisodeElement(episode)
+                        extractedEpisodes.push(metadata)
 
                     })
-                    extractedSeasons.push(extractedMovies)
+                    extractedSeasons.push({ extractedEpisodes, title: seasons[index].title })
                 })
                 resolve({ seasons: extractedSeasons, details })
 
             }).catch((err) => {
                 reject(err)
-
-
             })
         })
 

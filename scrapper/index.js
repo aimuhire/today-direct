@@ -1,19 +1,23 @@
 const cheerio = require('cheerio')
-const fs = require("fs")
-
+let rp = require('request-promise');
 
 
 
 class Scrapper {
+    constructor(endpoint) {
+        if (endpoint.startsWith("/"))
+            this.url = "http://www.todaytvseries2.com" + endpoint
+    }
 
-    loadPage(url) {
+    loadPage() {
         return new Promise((resolve, reject) => {
+            rp(this.url).then((body) => {
+                this.$ = cheerio.load(body)
+                if (!this.$)
+                    reject("Could not load")
+                resolve(true)
+            })
 
-            let body = fs.readFileSync('/home/mars/Documents/github/today/temp.html')
-            this.$ = cheerio.load(body.toString())
-            if (!this.$)
-                reject("Could not load")
-            resolve(true)
         })
     }
 
@@ -25,21 +29,26 @@ class Scrapper {
 
         return seasonsElementsLinks
     }
-    getMoviesElementsList() {
+    getEpisodesElementsList() {
         let seasonElements = this.getSeasonsElementsList()
         let seasonsList = []
 
-        seasonElements.forEach((element, j) => {
-            let seasonMovieElements = []
-            this.$('.uk-margin .row2.footer', element).each((index, movieElement) => {
-                seasonMovieElements.push(movieElement)
+        // get season titles 
+        let seasonTitles = []
+        this.$('.uk-accordion-title').each((i, elem) => {
+            seasonTitles[i] = this.cleanString(this.$(elem).text());
+        });
+        seasonElements.forEach((element, seasonIndex) => {
+            let seasonEpisodeElements = []
+            this.$('.uk-margin .row2.footer', element).each((index, episodeElement) => {
+                seasonEpisodeElements.push(episodeElement)
             })
-            seasonsList.push(seasonMovieElements)
+            seasonsList.push({ seasonEpisodeElements, title: seasonTitles[seasonIndex] })
         });
         return seasonsList
     }
 
-    getMovieDetails() {
+    getEpisodeDetails() {
         let name = this.$(".uk-article-title.uk-badge1").text()
         let seriesImage = this.$(".imageseries1 img").attr("src")
 
@@ -62,12 +71,12 @@ class Scrapper {
         //series-image
     }
 
-    extractMetadataFromMovieElement(movieElement) {
+    extractMetadataFromEpisodeElement(episodeElement) {
         let metadata = {}
-        let title = this.$(".cell2", movieElement).text()
-        let size = this.$(".cell3", movieElement).text()
-        let downloadText = this.$(".cell4", movieElement).text()
-        let url = this.$(".cell4 a", movieElement).attr("href")
+        let title = this.$(".cell2", episodeElement).text()
+        let size = this.$(".cell3", episodeElement).text()
+        let downloadText = this.$(".cell4", episodeElement).text()
+        let url = this.$(".cell4 a", episodeElement).attr("href")
 
 
         return {
