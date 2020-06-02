@@ -54,9 +54,9 @@ class SearchController {
     createSearchResultElement(result) {
         let searchElement = document.createElement("div")
         searchElement.className = "search-item-container"
-        let titleElement = document.createElement("span")
+        let titleElement = document.createElement("p")
         titleElement.className = "search-item-title"
-        let descriptionElement = document.createElement("span")
+        let descriptionElement = document.createElement("p")
         descriptionElement.className = "search-item-description"
         // Populate children
         titleElement.innerText = result.title
